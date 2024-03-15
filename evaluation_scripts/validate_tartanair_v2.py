@@ -82,6 +82,7 @@ if __name__ == '__main__':
         scenedir = os.path.join(args.datapath, scene)
         
         for (tstamp, image, intrinsics) in tqdm(image_stream(scenedir, 
+                                                             image_size=args.image_size,
                                                              stereo=args.stereo,
                                                              intrinsics_vec=[320.0, 320.0, 320.0, 320.0])):
             droid.track(tstamp, image, intrinsics=intrinsics)
