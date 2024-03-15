@@ -1,0 +1,8 @@
+AbandonedSchool/Data_easy/P000
+AbandonedSchool/Data_easy/P001
+AbandonedSchool/Data_hard/P000
+AbandonedSchool/Data_hard/P001
+CoalMine/Data_easy/P000
+CoalMine/Data_easy/P001
+CoalMine/Data_hard/P000
+CoalMine/Data_hard/P001
