@@ -42,7 +42,7 @@ if __name__ == '__main__':
     parser.add_argument("--datapath", default="datasets/TartanAir")
     parser.add_argument("--weights", default="droid.pth")
     parser.add_argument("--buffer", type=int, default=1000)
-    parser.add_argument("--image_size", default=[640,640])
+    parser.add_argument("--image_size", default=[512,512])
     parser.add_argument("--stereo", action="store_true")
     parser.add_argument("--disable_vis", action="store_true")
     parser.add_argument("--plot_curve", action="store_true")
