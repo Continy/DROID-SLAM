@@ -62,6 +62,7 @@ if __name__ == '__main__':
     parser.add_argument("--backend_nms", type=int, default=3)
 
     args = parser.parse_args()
+    args.upsample = False
     torch.multiprocessing.set_start_method('spawn')
 
     from data_readers.tartan import test_split
