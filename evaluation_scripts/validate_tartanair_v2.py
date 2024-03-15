@@ -100,6 +100,13 @@ if __name__ == '__main__':
         results = evaluator.evaluate_one_trajectory(
             traj_ref, traj_est, scale=True, title=scenedir[-20:].replace('/', '_'))
         
+        # save traj_est
+        traj_est_path = scene.replace('/', '_') + "_traj_est.txt"
+        traj_est_ned = traj_est[:, [2, 0, 1, 5, 3, 4, 6]]
+        np.savetxt(traj_est_path, traj_est_ned, delimiter=' ')
+        
+        print("Saved estimated trajectory to {}".format(traj_est_path))
+        
         print(results)
         ate_list.append(results["ate_score"])
 
