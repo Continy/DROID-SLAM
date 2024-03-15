@@ -88,7 +88,8 @@ if __name__ == '__main__':
             droid.track(tstamp, image, intrinsics=intrinsics)
 
         # fill in non-keyframe poses + global BA
-        traj_est = droid.terminate(image_stream(scenedir))
+        traj_est = droid.terminate(image_stream(scenedir, image_size=args.image_size,
+                                                intrinsics_vec=[320.0, 320.0, 320.0, 320.0]))
 
         ### do evaluation ###
         evaluator = TartanAirEvaluator()
