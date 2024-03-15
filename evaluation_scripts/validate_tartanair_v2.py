@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     torch.multiprocessing.set_start_method('spawn')
-
+    args.upsample = False
     from data_readers.tartan_v2 import test_split
     from evaluation.tartanair_evaluator import TartanAirEvaluator
 
