@@ -1,0 +1,1 @@
+bash ./tools/validate_tartanair_v2.sh --plot_curve --stereo
