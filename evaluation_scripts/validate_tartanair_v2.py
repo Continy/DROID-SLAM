@@ -101,9 +101,17 @@ if __name__ == '__main__':
             traj_ref, traj_est, scale=True, title=scenedir[-20:].replace('/', '_'))
         
         # save traj_est
+        os.makedirs("results", exist_ok=True)
         traj_est_path = scene.replace('/', '_') + "_traj_est.txt"
+        traj_est_path = os.path.join("results", traj_est_path)
+        
+        traj_ref_path = scene.replace('/', '_') + "_traj_ref.txt"
+        traj_ref_path = os.path.join("results", traj_ref_path)
         traj_est_ned = traj_est[:, [2, 0, 1, 5, 3, 4, 6]]
+        traj_ref_ned = traj_ref[:, [2, 0, 1, 5, 3, 4, 6]]
+        
         np.savetxt(traj_est_path, traj_est_ned, delimiter=' ')
+        np.savetxt(traj_ref_path, traj_ref_ned, delimiter=' ')
         
         print("Saved estimated trajectory to {}".format(traj_est_path))
         
