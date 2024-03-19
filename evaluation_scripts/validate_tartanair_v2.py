@@ -61,7 +61,12 @@ if __name__ == '__main__':
     parser.add_argument("--backend_radius", type=int, default=2)
     parser.add_argument("--backend_nms", type=int, default=3)
 
+    parser.add_argument("--save_path", default="results")
+    
     args = parser.parse_args()
+    
+    save_path = args.save_path
+    
     torch.multiprocessing.set_start_method('spawn')
     args.upsample = False
     from data_readers.tartan_v2 import test_split
@@ -101,12 +106,12 @@ if __name__ == '__main__':
             traj_ref, traj_est, scale=True, title=scenedir[-20:].replace('/', '_'))
         
         # save traj_est
-        os.makedirs("results", exist_ok=True)
+        os.makedirs(save_path, exist_ok=True)
         traj_est_path = scene.replace('/', '_') + "_traj_est.txt"
-        traj_est_path = os.path.join("results", traj_est_path)
+        traj_est_path = os.path.join(save_path, traj_est_path)
         
         traj_ref_path = scene.replace('/', '_') + "_traj_ref.txt"
-        traj_ref_path = os.path.join("results", traj_ref_path)
+        traj_ref_path = os.path.join(save_path, traj_ref_path)
         traj_est_ned = traj_est[:, [2, 0, 1, 5, 3, 4, 6]]
         traj_ref_ned = traj_ref[:, [2, 0, 1, 5, 3, 4, 6]]
         
