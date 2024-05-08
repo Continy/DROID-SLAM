@@ -1,2 +1,18 @@
-abandonedfactory/Data/P001
+seasidetown/Data/P000
+seasidetown/Data/P001
+seasidetown/Data/P002
+seasidetown/Data/P003
+seasidetown/Data/P004
+seasidetown/Data/P005
+soulcity/Data/P000
+soulcity/Data/P001
+soulcity/Data/P002
+soulcity/Data/P003
+soulcity/Data/P004
+soulcity/Data/P005
+soulcity/Data/P006
+soulcity/Data/P007
+soulcity/Data/P008
+soulcity/Data/P009
+soulcity/Data/P010
 

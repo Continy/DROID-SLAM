@@ -42,7 +42,7 @@ if __name__ == '__main__':
     parser.add_argument("--datapath", default="datasets/TartanAir")
     parser.add_argument("--weights", default="droid.pth")
     parser.add_argument("--buffer", type=int, default=1000)
-    parser.add_argument("--image_size", default=[384,512])
+    parser.add_argument("--image_size", default=[512,512])
     parser.add_argument("--stereo", action="store_true")
     parser.add_argument("--disable_vis", action="store_true")
     parser.add_argument("--plot_curve", action="store_true")
@@ -61,10 +61,15 @@ if __name__ == '__main__':
     parser.add_argument("--backend_radius", type=int, default=2)
     parser.add_argument("--backend_nms", type=int, default=3)
 
+    parser.add_argument("--save_path", default="results")
+    parser.add_argument("--disable_frontend", action="store_true", help="Disable local bundle adjustment")
+    parser.add_argument("--disable_backend", action="store_true", help="Disable global bundle adjustment")
     args = parser.parse_args()
-    args.upsample = False
+    
+    save_path = args.save_path
+    
     torch.multiprocessing.set_start_method('spawn')
-
+    args.upsample = False
     from data_readers.tartan import test_split
     from evaluation.tartanair_evaluator import TartanAirEvaluator
 
@@ -82,11 +87,15 @@ if __name__ == '__main__':
 
         scenedir = os.path.join(args.datapath, scene)
         
-        for (tstamp, image, intrinsics) in tqdm(image_stream(scenedir, stereo=args.stereo)):
+        for (tstamp, image, intrinsics) in tqdm(image_stream(scenedir, 
+                                                             image_size=args.image_size,
+                                                             stereo=args.stereo,
+                                                             intrinsics_vec=[320.0, 320.0, 320.0, 240.0])):
             droid.track(tstamp, image, intrinsics=intrinsics)
 
         # fill in non-keyframe poses + global BA
-        traj_est = droid.terminate(image_stream(scenedir))
+        traj_est = droid.terminate(image_stream(scenedir, image_size=args.image_size,
+                                                intrinsics_vec=[320.0, 320.0, 320.0, 240.0]))
 
         ### do evaluation ###
         evaluator = TartanAirEvaluator()
@@ -96,6 +105,21 @@ if __name__ == '__main__':
         # usually stereo should not be scale corrected, but we are comparing monocular and stereo here
         results = evaluator.evaluate_one_trajectory(
             traj_ref, traj_est, scale=True, title=scenedir[-20:].replace('/', '_'))
+        
+        # save traj_est
+        os.makedirs(save_path, exist_ok=True)
+        traj_est_path = scene.replace('/', '_') + "_traj_est.txt"
+        traj_est_path = os.path.join(save_path, traj_est_path)
+        
+        traj_ref_path = scene.replace('/', '_') + "_traj_ref.txt"
+        traj_ref_path = os.path.join(save_path, traj_ref_path)
+        traj_est_ned = traj_est[:, [2, 0, 1, 5, 3, 4, 6]]
+        traj_ref_ned = traj_ref[:, [2, 0, 1, 5, 3, 4, 6]]
+        
+        np.savetxt(traj_est_path, traj_est_ned, delimiter=' ')
+        np.savetxt(traj_ref_path, traj_ref_ned, delimiter=' ')
+        
+        print("Saved estimated trajectory to {}".format(traj_est_path))
         
         print(results)
         ate_list.append(results["ate_score"])
@@ -112,5 +136,5 @@ if __name__ == '__main__':
         plt.plot(xs, ys)
         plt.xlabel("ATE [m]")
         plt.ylabel("% runs")
-        plt.show()
+        plt.savefig("tartan_v1_ate_curve.png")
 

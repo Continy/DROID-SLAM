@@ -1,0 +1,1 @@
+bash ./tools/validate_tartanair_v2.sh --plot_curve --stereo --save_path results/tartanair_v2_stereo --disable_frontend --disable_backend

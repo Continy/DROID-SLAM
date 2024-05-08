@@ -1,1 +1,0 @@
-bash ./tools/validate_tartanair_v2.sh --plot_curve --stereo --filter_thresh 0.0 --save_path results/motion_filter

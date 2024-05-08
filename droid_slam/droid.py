@@ -66,7 +66,10 @@ class Droid:
             self.filterx.track(tstamp, image, depth, intrinsics)
 
             # local bundle adjustment
-            self.frontend()
+            if self.args.disable_frontend:
+                del self.frontend
+            else:
+                self.frontend()
 
             # global bundle adjustment
             # self.backend()
@@ -75,14 +78,16 @@ class Droid:
         """ terminate the visualization process, return poses [t, q] """
 
         del self.frontend
+        if self.args.disable_backend:
+            del self.backend
+        else:
+            torch.cuda.empty_cache()
+            print("#" * 32)
+            self.backend(7)
 
-        torch.cuda.empty_cache()
-        print("#" * 32)
-        self.backend(7)
-
-        torch.cuda.empty_cache()
-        print("#" * 32)
-        self.backend(12)
+            torch.cuda.empty_cache()
+            print("#" * 32)
+            self.backend(12)
 
         camera_trajectory = self.traj_filler(stream)
         return camera_trajectory.inv().data.cpu().numpy()

@@ -62,7 +62,8 @@ if __name__ == '__main__':
     parser.add_argument("--backend_nms", type=int, default=3)
 
     parser.add_argument("--save_path", default="results")
-    
+    parser.add_argument("--disable_frontend", action="store_true", help="Disable local bundle adjustment")
+    parser.add_argument("--disable_backend", action="store_true", help="Disable global bundle adjustment")
     args = parser.parse_args()
     
     save_path = args.save_path
