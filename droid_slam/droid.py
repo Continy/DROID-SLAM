@@ -67,7 +67,7 @@ class Droid:
 
             # local bundle adjustment
             if self.args.disable_frontend:
-                del self.frontend
+                ...
             else:
                 self.frontend()
 
@@ -79,7 +79,7 @@ class Droid:
 
         del self.frontend
         if self.args.disable_backend:
-            del self.backend
+            ...
         else:
             torch.cuda.empty_cache()
             print("#" * 32)
