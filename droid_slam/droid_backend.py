@@ -22,7 +22,7 @@ class DroidBackend:
         self.backend_nms = args.backend_nms
         
     @torch.no_grad()
-    def __call__(self, steps=12):
+    def __call__(self, steps=12, noBA=False):
         """ main update """
 
         t = self.video.counter.value
@@ -36,6 +36,6 @@ class DroidBackend:
                                     thresh=self.backend_thresh, 
                                     beta=self.beta)
 
-        graph.update_lowmem(steps=steps)
+        graph.update_lowmem(steps=steps, noBA=noBA)
         graph.clear_edges()
         self.video.dirty[:t] = True

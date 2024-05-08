@@ -27,7 +27,7 @@ class Droid:
         self.filterx = MotionFilter(self.net, self.video, thresh=args.filter_thresh)
 
         # frontend process
-        self.frontend = DroidFrontend(self.net, self.video, self.args)
+        self.frontend = DroidFrontend(self.net, self.video, self.args, self.args.disable_frontend)
         
         # backend process
         self.backend = DroidBackend(self.net, self.video, self.args)
@@ -66,10 +66,7 @@ class Droid:
             self.filterx.track(tstamp, image, depth, intrinsics)
 
             # local bundle adjustment
-            if self.args.disable_frontend:
-                ...
-            else:
-                self.frontend()
+            self.frontend(noBA = self.args.disable_frontend)
 
             # global bundle adjustment
             # self.backend()
@@ -78,16 +75,14 @@ class Droid:
         """ terminate the visualization process, return poses [t, q] """
 
         del self.frontend
-        if self.args.disable_backend:
-            ...
-        else:
-            torch.cuda.empty_cache()
-            print("#" * 32)
-            self.backend(7)
 
-            torch.cuda.empty_cache()
-            print("#" * 32)
-            self.backend(12)
+        torch.cuda.empty_cache()
+        print("#" * 32)
+        self.backend(7, noBA=self.args.disable_backend)
+
+        torch.cuda.empty_cache()
+        print("#" * 32)
+        self.backend(12, noBA=self.args.disable_backend)
 
         camera_trajectory = self.traj_filler(stream)
         return camera_trajectory.inv().data.cpu().numpy()

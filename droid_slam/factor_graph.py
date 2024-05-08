@@ -195,7 +195,7 @@ class FactorGraph:
 
 
     @torch.cuda.amp.autocast(enabled=True)
-    def update(self, t0=None, t1=None, itrs=2, use_inactive=False, EP=1e-7, motion_only=False):
+    def update(self, t0=None, t1=None, itrs=2, use_inactive=False, EP=1e-7, motion_only=False, noBA=False):
         """ run update operator on factor graph """
 
         # motion features
@@ -237,8 +237,9 @@ class FactorGraph:
             weight = weight.view(-1, ht, wd, 2).permute(0,3,1,2).contiguous()
 
             # dense bundle adjustment
-            self.video.ba(target, weight, damping, ii, jj, t0, t1, 
-                itrs=itrs, lm=1e-4, ep=0.1, motion_only=motion_only)
+            if not noBA:
+                self.video.ba(target, weight, damping, ii, jj, t0, t1, 
+                    itrs=itrs, lm=1e-4, ep=0.1, motion_only=motion_only)
         
             if self.upsample:
                 self.video.upsample(torch.unique(self.ii), upmask)
@@ -247,7 +248,7 @@ class FactorGraph:
 
 
     @torch.cuda.amp.autocast(enabled=False)
-    def update_lowmem(self, t0=None, t1=None, itrs=2, use_inactive=False, EP=1e-7, steps=8):
+    def update_lowmem(self, t0=None, t1=None, itrs=2, use_inactive=False, EP=1e-7, steps=8, noBA=False):
         """ run update operator on factor graph - reduced memory implementation """
 
         # alternate corr implementation
@@ -290,8 +291,9 @@ class FactorGraph:
             weight = self.weight.view(-1, ht, wd, 2).permute(0,3,1,2).contiguous()
 
             # dense bundle adjustment
-            self.video.ba(target, weight, damping, self.ii, self.jj, 1, t, 
-                itrs=itrs, lm=1e-5, ep=1e-2, motion_only=False)
+            if not noBA:
+                self.video.ba(target, weight, damping, self.ii, self.jj, 1, t, 
+                    itrs=itrs, lm=1e-5, ep=1e-2, motion_only=False)
 
             self.video.dirty[:t] = True
 
