@@ -27,7 +27,7 @@ class Droid:
         self.filterx = MotionFilter(self.net, self.video, thresh=args.filter_thresh)
 
         # frontend process
-        self.frontend = DroidFrontend(self.net, self.video, self.args, self.args.disable_frontend)
+        self.frontend = DroidFrontend(self.net, self.video, self.args)
         
         # backend process
         self.backend = DroidBackend(self.net, self.video, self.args)
