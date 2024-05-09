@@ -17,4 +17,3 @@
 EXE=/bin/bash
 
 singularity exec --nv --bind /compute/zoidberg/tartanair_v2:/zihao/datasets:ro,/data2/datasets/yuhengq/zihao/DROID-SLAM:/zihao/DROID-SLAM /data2/datasets/yuhengq/zihao/DroidSLAM.sif bash /zihao/DROID-SLAM/script_v2.sh
-```
