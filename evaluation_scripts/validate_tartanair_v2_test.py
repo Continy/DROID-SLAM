@@ -12,6 +12,7 @@ import glob
 import time
 import yaml
 import argparse
+import tqdm
 
 from droid import Droid
 
@@ -24,7 +25,9 @@ def image_stream(datapath, image_size=[384, 512], intrinsics_vec=[320.0, 320.0, 
     images_right = sorted(glob.glob(os.path.join(datapath, 'image_rcam_front/*.png')))
 
     data = []
-    for t in range(len(images_left)):
+    print("Found {} images".format(len(images_left)))
+    print("Loading images...")
+    for t in tqdm(range(len(images_left))):
         images = [ cv2.resize(cv2.imread(images_left[t]), (image_size[1], image_size[0])) ]
         if stereo:
             images += [ cv2.resize(cv2.imread(images_right[t]), (image_size[1], image_size[0])) ]

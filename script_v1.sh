@@ -1,1 +1,2 @@
 bash ./tools/validate_tartanair.sh --plot_curve --stereo --save_path results/tartanair_v1_stereo/noGlobalBA --disable_backend
+bash ./tools/validate_tartanair.sh --plot_curve --stereo --save_path results/tartanair_v1_stereo/full
