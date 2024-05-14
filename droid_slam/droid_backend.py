@@ -35,7 +35,8 @@ class DroidBackend:
                                     nms=self.backend_nms, 
                                     thresh=self.backend_thresh, 
                                     beta=self.beta)
-
+        if noBA:
+            steps = 0
         graph.update_lowmem(steps=steps, noBA=noBA)
         graph.clear_edges()
         self.video.dirty[:t] = True
