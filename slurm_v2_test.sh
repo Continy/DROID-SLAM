@@ -16,4 +16,4 @@
 # Executable
 EXE=/bin/bash
 
-singularity exec --nv --bind /ocean/projects/cis220039p/shared/TartanAir:/zihao/datasets:ro,/jet/home/yuhengq/workspace/DROID-SLAM:/zihao/DROID-SLAM /ocean/projects/cis220039p/yuhengq/singularity/DroidSLAM.sif bash /zihao/DROID-SLAM/script_v2_test.sh
+singularity exec --nv --bind /data2/datasets/yuhengq:/zihao/datasets:ro,/data2/datasets/yuhengq/zihao/DROID-SLAM:/zihao/DROID-SLAM /data2/datasets/yuhengq/zihao/DroidSLAM.sif bash /zihao/DROID-SLAM/script_v2_test.sh
