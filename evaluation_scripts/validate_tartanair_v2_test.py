@@ -1,7 +1,7 @@
 import sys
 sys.path.append('droid_slam')
 sys.path.append('thirdparty/tartanair_tools')
-
+import gc
 from tqdm import tqdm
 import numpy as np
 import torch
@@ -82,6 +82,8 @@ if __name__ == '__main__':
         test_split = [ test_split[args.id] ]
 
     ate_list = []
+    print("Testing on {} scenes".format(len(test_split)))
+    print("Scene list: ", test_split)
     for scene in test_split:
         print("Performing evaluation on {}".format(scene))
         torch.cuda.empty_cache()
@@ -125,6 +127,10 @@ if __name__ == '__main__':
         
         print(results)
         ate_list.append(results["ate_score"])
+        
+        del droid
+        gc.collect()
+        torch.cuda.empty_cache()
 
     print("Results")
     print(ate_list)
