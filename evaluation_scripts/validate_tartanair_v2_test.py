@@ -12,7 +12,6 @@ import glob
 import time
 import yaml
 import argparse
-import tqdm
 
 from droid import Droid
 
