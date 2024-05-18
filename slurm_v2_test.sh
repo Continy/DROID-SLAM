@@ -2,11 +2,11 @@
 
 # SLURM Resource Parameters
 
-#SBATCH -n 5                       # Number of cores
+#SBATCH -n 12                       # Number of cores
 #SBATCH -N 1                        # Number of nodes always 1
-#SBATCH -t 4:00:00 # D-HH:MM        # Time using the nodes
-#SBATCH -p GPU-shared               # Partition you submit to
-#SBATCH --gres=gpu:v100-32:1               # GPUs
+#SBATCH -t 3-23:00 # D-HH:MM        # Time using the nodes
+#SBATCH -p a100-gpu-shared               # Partition you submit to
+#SBATCH --gres=gpu:1               # GPUs
 #SBATCH --mem=32G                   # Memory you need
 #SBATCH --job-name=DROIDSLAM     # Job name
 #SBATCH -o job_%j.out
