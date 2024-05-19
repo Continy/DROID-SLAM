@@ -104,7 +104,7 @@ if __name__ == '__main__':
     parser.add_argument("--disable_backend", action="store_true", help="Disable global bundle adjustment")
 
     args = parser.parse_args()
-
+    args.upsample = False
     torch.multiprocessing.set_start_method('spawn')
 
     print("Running evaluation on {}".format(args.datapath))

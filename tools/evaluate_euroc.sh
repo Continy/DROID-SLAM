@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-EUROC_PATH=datasets/EuRoC
+EUROC_PATH=/zihao/datasets/EuRoC
 
 evalset=(
     MH_01_easy
