@@ -113,39 +113,17 @@ if __name__ == '__main__':
     droid = Droid(args)
     time.sleep(5)
 
-    for (t, image, intrinsics) in tqdm(image_stream(args.datapath, stereo=args.stereo, stride=2), total=len(glob.glob(os.path.join(args.datapath, 'mav0/cam0/data/*.png')))):
+    for (t, image, intrinsics) in tqdm(image_stream(args.datapath, stereo=args.stereo, stride=2), total=len(
+        glob.glob(os.path.join(args.datapath, 'mav0/cam0/data/*.png'))) // 2):
         droid.track(t, image, intrinsics=intrinsics)
 
     traj_est = droid.terminate(image_stream(args.datapath, stride=1))
-
-    ### run evaluation ###
-
-    import evo
-    from evo.core.trajectory import PoseTrajectory3D
-    from evo.tools import file_interface
-    from evo.core import sync
-    import evo.main_ape as main_ape
-    from evo.core.metrics import PoseRelation
-
-    images_list = sorted(glob.glob(os.path.join(args.datapath, 'mav0/cam0/data/*.png')))
-    tstamps = [float(x.split('/')[-1][:-4]) for x in images_list]
-
-    traj_est = PoseTrajectory3D(
-        positions_xyz=1.10 * traj_est[:,:3],
-        orientations_quat_wxyz=traj_est[:,3:],
-        timestamps=np.array(tstamps))
-
-    traj_ref = file_interface.read_tum_trajectory_file(args.gt)
-
-    traj_ref, traj_est = sync.associate_trajectories(traj_ref, traj_est)
     traj_est_ned = traj_est[:, [2, 0, 1, 5, 3, 4, 6]]
+
     os.makedirs(args.save_path, exist_ok=True)
     np.savetxt(args.save_path + '/' + args.datapath.split('/')[-1] + '_traj_est.txt', traj_est_ned, delimiter=' ')
     print("Saved estimated trajectory to {}".format(args.save_path + '/' + args.datapath.split('/')[-1] + '_traj_est.txt'))
-    result = main_ape.ape(traj_ref, traj_est, est_name='traj', 
-        pose_relation=PoseRelation.translation_part, align=True, correct_scale=True)
 
-    print(result)
 
     del droid
     torch.cuda.empty_cache()
