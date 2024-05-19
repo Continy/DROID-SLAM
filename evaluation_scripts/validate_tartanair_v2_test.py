@@ -121,7 +121,7 @@ if __name__ == '__main__':
         traj_ref_ned = traj_ref[:, [2, 0, 1, 5, 3, 4, 6]]
         
         np.savetxt(traj_est_path, traj_est_ned, delimiter=' ')
-        np.savetxt(traj_ref_path, traj_ref_ned, delimiter=' ')
+        # np.savetxt(traj_ref_path, traj_ref_ned, delimiter=' ')
         
         print("Saved estimated trajectory to {}".format(traj_est_path))
         

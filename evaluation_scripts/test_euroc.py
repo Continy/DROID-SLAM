@@ -98,6 +98,11 @@ if __name__ == '__main__':
     parser.add_argument("--backend_thresh", type=float, default=24.0)
     parser.add_argument("--backend_radius", type=int, default=2)
     parser.add_argument("--backend_nms", type=int, default=2)
+    
+    parser.add_argument("--save_path", default="results")
+    parser.add_argument("--disable_frontend", action="store_true", help="Disable local bundle adjustment")
+    parser.add_argument("--disable_backend", action="store_true", help="Disable global bundle adjustment")
+
     args = parser.parse_args()
 
     torch.multiprocessing.set_start_method('spawn')
@@ -133,10 +138,13 @@ if __name__ == '__main__':
     traj_ref = file_interface.read_tum_trajectory_file(args.gt)
 
     traj_ref, traj_est = sync.associate_trajectories(traj_ref, traj_est)
-
+    traj_est_ned = traj_est[:, [2, 0, 1, 5, 3, 4, 6]]
+    
+    np.savetxt(args.save_path + '/' + args.datapath.split('/')[-1] + '_traj_est.txt', traj_est_ned, delimiter=' ')
     result = main_ape.ape(traj_ref, traj_est, est_name='traj', 
         pose_relation=PoseRelation.translation_part, align=True, correct_scale=True)
 
     print(result)
 
-
+    del droid
+    torch.cuda.empty_cache()
