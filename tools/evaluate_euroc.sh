@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-EUROC_PATH=/zihao/datasets/EuRoC
+EUROC_PATH=/zihao/datasets/Euroc
 
 evalset=(
     MH_01_easy
@@ -18,7 +18,7 @@ evalset=(
 )
 
 for seq in ${evalset[@]}; do
-    python evaluation_scripts/test_euroc.py --datapath=$EUROC_PATH/$seq --gt=data/euroc_groundtruth/$seq.txt --weights=droid.pth --stereo --save_path=results/euroc/full $@
-    python evaluation_scripts/test_euroc.py --datapath=$EUROC_PATH/$seq --gt=data/euroc_groundtruth/$seq.txt --weights=droid.pth --stereo --save_path=results/euroc/noGlobalBA --disable_backend $@
+    python evaluation_scripts/test_euroc.py --datapath=$EUROC_PATH/$seq --gt=data/euroc_groundtruth/$seq.txt --weights=droid.pth --stereo --save_path=results/euroc/full --disable_vis$@
+    python evaluation_scripts/test_euroc.py --datapath=$EUROC_PATH/$seq --gt=data/euroc_groundtruth/$seq.txt --weights=droid.pth --stereo --save_path=results/euroc/noGlobalBA --disable_backend --disable_vis$@
 done
 

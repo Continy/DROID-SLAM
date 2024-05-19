@@ -54,8 +54,8 @@ def image_stream(datapath, image_size=[320, 512], stereo=False, stride=1):
     # read all png images in folder
     images_left = sorted(glob.glob(os.path.join(datapath, 'mav0/cam0/data/*.png')))[::stride]
     images_right = [x.replace('cam0', 'cam1') for x in images_left]
-
-    for t, (imgL, imgR) in enumerate(zip(images_left, images_right)):
+    print("Found {} images".format(len(images_left)))
+    for t, (imgL, imgR) in tqdm(enumerate(zip(images_left, images_right)), total=len(images_left)):
         if stereo and not os.path.isfile(imgR):
             continue
         tstamp = float(imgL.split('/')[-1][:-4])        
@@ -113,7 +113,7 @@ if __name__ == '__main__':
     droid = Droid(args)
     time.sleep(5)
 
-    for (t, image, intrinsics) in tqdm(image_stream(args.datapath, stereo=args.stereo, stride=2)):
+    for (t, image, intrinsics) in tqdm(image_stream(args.datapath, stereo=args.stereo, stride=2), total=len(glob.glob(os.path.join(args.datapath, 'mav0/cam0/data/*.png')))):
         droid.track(t, image, intrinsics=intrinsics)
 
     traj_est = droid.terminate(image_stream(args.datapath, stride=1))
@@ -139,7 +139,7 @@ if __name__ == '__main__':
 
     traj_ref, traj_est = sync.associate_trajectories(traj_ref, traj_est)
     traj_est_ned = traj_est[:, [2, 0, 1, 5, 3, 4, 6]]
-    
+    os.makedirs(args.save_path, exist_ok=True)
     np.savetxt(args.save_path + '/' + args.datapath.split('/')[-1] + '_traj_est.txt', traj_est_ned, delimiter=' ')
     result = main_ape.ape(traj_ref, traj_est, est_name='traj', 
         pose_relation=PoseRelation.translation_part, align=True, correct_scale=True)
