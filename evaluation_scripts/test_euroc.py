@@ -55,7 +55,7 @@ def image_stream(datapath, image_size=[320, 512], stereo=False, stride=1):
     images_left = sorted(glob.glob(os.path.join(datapath, 'mav0/cam0/data/*.png')))[::stride]
     images_right = [x.replace('cam0', 'cam1') for x in images_left]
     print("Found {} images".format(len(images_left)))
-    for t, (imgL, imgR) in tqdm(enumerate(zip(images_left, images_right)), total=len(images_left)):
+    for t, (imgL, imgR) in enumerate(zip(images_left, images_right)):
         if stereo and not os.path.isfile(imgR):
             continue
         tstamp = float(imgL.split('/')[-1][:-4])        
@@ -141,6 +141,7 @@ if __name__ == '__main__':
     traj_est_ned = traj_est[:, [2, 0, 1, 5, 3, 4, 6]]
     os.makedirs(args.save_path, exist_ok=True)
     np.savetxt(args.save_path + '/' + args.datapath.split('/')[-1] + '_traj_est.txt', traj_est_ned, delimiter=' ')
+    print("Saved estimated trajectory to {}".format(args.save_path + '/' + args.datapath.split('/')[-1] + '_traj_est.txt'))
     result = main_ape.ape(traj_ref, traj_est, est_name='traj', 
         pose_relation=PoseRelation.translation_part, align=True, correct_scale=True)
 
