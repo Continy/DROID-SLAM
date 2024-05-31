@@ -85,14 +85,21 @@ if __name__ == '__main__':
         print("Performing evaluation on {}".format(scene))
         torch.cuda.empty_cache()
         droid = Droid(args)
-
+        origin = [376, 1240]
+        target = args.image_size
         scenedir = os.path.join(args.datapath, scene)
         if scene == '00' or scene == '01' or scene == '02':
             intrinsics_vec = [718.856, 718.856, 607.1928, 185.2157]
+            intrinsics_vec[2] = intrinsics_vec[2] - (origin[1] - target[1]) / 2
+            intrinsics_vec[3] = intrinsics_vec[3] - (origin[0] - target[0]) / 2
         elif scene == '03':
             intrinsics_vec = [721.5377, 721.5377, 609.5593, 172.854]
+            intrinsics_vec[2] = intrinsics_vec[2] - (origin[1] - target[1]) / 2
+            intrinsics_vec[3] = intrinsics_vec[3] - (origin[0] - target[0]) / 2
         else:
             intrinsics_vec = [707.0912, 707.0912, 601.8873, 183.1104]
+            intrinsics_vec[2] = intrinsics_vec[2] - (origin[1] - target[1]) / 2
+            intrinsics_vec[3] = intrinsics_vec[3] - (origin[0] - target[0]) / 2
         for (tstamp, image, intrinsics) in tqdm(image_stream(scenedir, 
                                                              image_size=args.image_size,
                                                              stereo=args.stereo,
