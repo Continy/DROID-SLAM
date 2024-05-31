@@ -32,7 +32,7 @@ def image_stream(datapath, image_size=[376, 1240], intrinsics_vec=[320.0, 320.0,
             images += [cv2.imread(images_right[t])]
 
         images = torch.from_numpy(np.stack(images, 0)).permute(0,3,1,2)
-        images = transforms.Resize(image_size)(images)
+        images = transforms.CenterCrop(image_size)(images)
         intrinsics = torch.as_tensor(intrinsics_vec)
 
         data.append((t, images, intrinsics))
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     parser.add_argument("--datapath", default="datasets/TartanAir")
     parser.add_argument("--weights", default="droid.pth")
     parser.add_argument("--buffer", type=int, default=2000)
-    parser.add_argument("--image_size", default=[376, 1240])
+    parser.add_argument("--image_size", default=[320, 832])
     parser.add_argument("--stereo", action="store_true")
     parser.add_argument("--disable_vis", action="store_true")
     parser.add_argument("--plot_curve", action="store_true")
