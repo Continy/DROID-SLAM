@@ -87,13 +87,12 @@ if __name__ == '__main__':
         droid = Droid(args)
 
         scenedir = os.path.join(args.datapath, scene)
-        match scene:
-            case '00' | '01' | '02' :
-                intrinsics_vec = [718.856, 718.856, 607.1928, 185.2157]
-            case '03' :
-                intrinsics_vec = [721.5377, 721.5377, 609.5593, 172.854]
-            case _ :
-                intrinsics_vec = [707.0912, 707.0912, 601.8873, 183.1104]
+        if scene == '00' or scene == '01' or scene == '02':
+            intrinsics_vec = [718.856, 718.856, 607.1928, 185.2157]
+        elif scene == '03':
+            intrinsics_vec = [721.5377, 721.5377, 609.5593, 172.854]
+        else:
+            intrinsics_vec = [707.0912, 707.0912, 601.8873, 183.1104]
         for (tstamp, image, intrinsics) in tqdm(image_stream(scenedir, 
                                                              image_size=args.image_size,
                                                              stereo=args.stereo,
