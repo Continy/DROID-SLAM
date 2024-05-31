@@ -15,24 +15,25 @@ import argparse
 
 from droid import Droid
 import torch.nn.functional as F
-
-def image_stream(datapath, image_size=[384, 512], intrinsics_vec=[320.0, 320.0, 320.0, 240.0], stereo=False):
+from torchvision import transforms
+def image_stream(datapath, image_size=[376, 1240], intrinsics_vec=[320.0, 320.0, 320.0, 240.0], stereo=False):
     """ image generator """
 
     # read all png images in folder
     ht0, wd0 = [1200, 1920]
-    images_left = sorted(glob.glob(os.path.join(datapath, 'rgb_l/*.png')))
-    images_right = sorted(glob.glob(os.path.join(datapath, 'rgb_r/*.png')))
+    image_size = tuple(image_size)
+    images_left = sorted(glob.glob(os.path.join(datapath, 'image_2/*.png')))
+    images_right = sorted(glob.glob(os.path.join(datapath, 'image_3/*.png')))
 
     data = []
     for t in range(len(images_left)):
-        images = [ cv2.resize(cv2.imread(images_left[t]), (image_size[1], image_size[0])) ]
+        images = [cv2.imread(images_left[t])]
         if stereo:
-            images += [ cv2.resize(cv2.imread(images_right[t]), (image_size[1], image_size[0])) ]
+            images += [cv2.imread(images_right[t])]
 
         images = torch.from_numpy(np.stack(images, 0)).permute(0,3,1,2)
-        
-        intrinsics = torch.as_tensor(intrinsics_vec) * 4 / 15
+        images = transforms.Resize(image_size)(images)
+        intrinsics = torch.as_tensor(intrinsics_vec)
 
         data.append((t, images, intrinsics))
 
@@ -44,7 +45,7 @@ if __name__ == '__main__':
     parser.add_argument("--datapath", default="datasets/TartanAir")
     parser.add_argument("--weights", default="droid.pth")
     parser.add_argument("--buffer", type=int, default=2000)
-    parser.add_argument("--image_size", default=[320,512])
+    parser.add_argument("--image_size", default=[376, 1240])
     parser.add_argument("--stereo", action="store_true")
     parser.add_argument("--disable_vis", action="store_true")
     parser.add_argument("--plot_curve", action="store_true")
@@ -77,8 +78,8 @@ if __name__ == '__main__':
     if not os.path.isdir("figures"):
         os.mkdir("figures")
 
-    test_split = ['kit2kit_manual_move', 'kit2kit_manual_dyna', 'kit2kit']
-    intrinsics_vec = [735.924, 735.714, 964.852, 622.205]
+    test_split = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10']
+    
 
     for scene in test_split:
         print("Performing evaluation on {}".format(scene))
@@ -86,7 +87,13 @@ if __name__ == '__main__':
         droid = Droid(args)
 
         scenedir = os.path.join(args.datapath, scene)
-        
+        match scene:
+            case '00' | '01' | '02' :
+                intrinsics_vec = [718.856, 718.856, 607.1928, 185.2157]
+            case '03' :
+                intrinsics_vec = [721.5377, 721.5377, 609.5593, 172.854]
+            case _ :
+                intrinsics_vec = [707.0912, 707.0912, 601.8873, 183.1104]
         for (tstamp, image, intrinsics) in tqdm(image_stream(scenedir, 
                                                              image_size=args.image_size,
                                                              stereo=args.stereo,
