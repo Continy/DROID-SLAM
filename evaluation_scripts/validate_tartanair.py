@@ -12,7 +12,7 @@ import glob
 import time
 import yaml
 import argparse
-
+import gc
 from droid import Droid
 
 def image_stream(datapath, image_size=[384, 512], intrinsics_vec=[320.0, 320.0, 320.0, 240.0], stereo=False):
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--datapath", default="datasets/TartanAir")
     parser.add_argument("--weights", default="droid.pth")
-    parser.add_argument("--buffer", type=int, default=1000)
+    parser.add_argument("--buffer", type=int, default=3000)
     parser.add_argument("--image_size", default=[384,512])
     parser.add_argument("--stereo", action="store_true")
     parser.add_argument("--disable_vis", action="store_true")
@@ -70,15 +70,13 @@ if __name__ == '__main__':
     
     torch.multiprocessing.set_start_method('spawn')
     args.upsample = False
-    from data_readers.tartan import test_split
     from evaluation.tartanair_evaluator import TartanAirEvaluator
 
     if not os.path.isdir("figures"):
         os.mkdir("figures")
 
-    if args.id >= 0:
-        test_split = [ test_split[args.id] ]
-
+    test_split = ['SE000', 'SE001', 'SE002', 'SE003', 'SE004', 'SE005', 'SE006', 'SE007',
+                  'SH000', 'SH001', 'SH002', 'SH003', 'SH004', 'SH005', 'SH006', 'SH007']
     ate_list = []
     for scene in test_split:
         print("Performing evaluation on {}".format(scene))
@@ -118,7 +116,9 @@ if __name__ == '__main__':
         
         np.savetxt(traj_est_path, traj_est_ned, delimiter=' ')
         np.savetxt(traj_ref_path, traj_ref_ned, delimiter=' ')
-        
+        del droid
+        gc.collect()
+        torch.cuda.empty_cache()
         print("Saved estimated trajectory to {}".format(traj_est_path))
         
         print(results)
